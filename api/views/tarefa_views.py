@@ -1,4 +1,3 @@
-from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from api import api
 from ..schemas import tarefa_schema
@@ -8,7 +7,6 @@ from ..services import tarefa_service
 from ..models.tarefa_model import Tarefa
 
 class TarefaList(Resource):
-    @jwt_required
     def get(self):
         tarefas = tarefa_service.listar_tarefas()
         ts = tarefa_schema.TarefaSchema(many=True)
@@ -23,17 +21,12 @@ class TarefaList(Resource):
             titulo = request.json["titulo"]
             descricao = request.json["descricao"]
             data_expiracao = request.json["data_expiracao"]
-            projeto = request.json["projeto"]
-            projeto_tarefa = projeto_service.listar_projeto_id(projeto)
-            if projeto_tarefa is None:
-                return make_response(jsonify("Projeto não encontrado"), 404)
             tarefa_nova = tarefa.Tarefa(titulo=titulo, descricao=descricao,
-                                        data_expiracao=data_expiracao, projeto=projeto_tarefa)
+                                        data_expiracao=data_expiracao)
             result = tarefa_service.cadastrar_tarefa(tarefa_nova)
             return make_response(ts.jsonify(result), 201)
 
 class TarefaDetail(Resource):
-    @jwt_required
     def get(self, id):
         tarefa = tarefa_service.listar_tarefa_id(id)
         if tarefa is None:
