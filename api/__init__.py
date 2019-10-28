@@ -14,5 +14,5 @@ jwt = JWTManager(app)
 
 api = Api(app)
 
-from .views import tarefa_views, usuario_views
+from .views import tarefa_views, usuario_views, login_views
 from .models import tarefa_model, usuario_model
