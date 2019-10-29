@@ -5,8 +5,10 @@ from flask import request, make_response, jsonify
 from ..entidades import tarefa
 from ..services import tarefa_service
 from ..models.tarefa_model import Tarefa
+from flask_jwt_extended import jwt_required
 
 class TarefaList(Resource):
+    @jwt_required
     def get(self):
         tarefas = tarefa_service.listar_tarefas()
         ts = tarefa_schema.TarefaSchema(many=True)
