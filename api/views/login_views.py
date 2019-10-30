@@ -4,9 +4,18 @@ from flask import request, make_response, jsonify
 from ..services import usuario_service
 from flask_jwt_extended import create_access_token, create_refresh_token
 from datetime import timedelta
-from api import api
+from api import api, jwt
 
 class LoginList(Resource):
+    @jwt.user_claims_loader
+    def add_claims_to_access_token(identity):
+        usuario_token = usuario_service.listar_usuario_id(identity)
+        if usuario_token.is_admin:
+            roles = 'admin'
+        else:
+            roles = 'user'
+        return {'roles': roles}
+
     def post(self):
         ls = login_schema.LoginSchema()
         validate = ls.validate(request.json)
