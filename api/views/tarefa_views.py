@@ -6,10 +6,10 @@ from ..entidades import tarefa
 from ..services import tarefa_service
 from ..models.tarefa_model import Tarefa
 from flask_jwt_extended import jwt_required, get_jwt_claims
-from ..meus_decorators import admin_required
+from ..meus_decorators import admin_required, api_key_required
 
 class TarefaList(Resource):
-    @jwt_required
+    @api_key_required
     def get(self):
         tarefas = tarefa_service.listar_tarefas()
         ts = tarefa_schema.TarefaSchema(many=True)
