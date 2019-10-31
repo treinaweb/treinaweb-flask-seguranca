@@ -6,6 +6,7 @@ from ..entidades import tarefa
 from ..services import tarefa_service
 from ..models.tarefa_model import Tarefa
 from flask_jwt_extended import jwt_required, get_jwt_claims
+from ..meus_decorators import admin_required
 
 class TarefaList(Resource):
     @jwt_required
@@ -14,11 +15,8 @@ class TarefaList(Resource):
         ts = tarefa_schema.TarefaSchema(many=True)
         return make_response(ts.jsonify(tarefas), 200)
 
-    @jwt_required
+    @admin_required
     def post(self):
-        claims = get_jwt_claims()
-        if claims['roles'] != 'admin':
-            return make_response(jsonify(mensagem='Não permitido'), 403)
         ts = tarefa_schema.TarefaSchema()
         validate = ts.validate(request.json)
         if validate:
